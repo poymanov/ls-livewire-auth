@@ -1,0 +1,51 @@
+version: '3'
+services:
+  nginx:
+    build:
+      context: ./docker/nginx
+    volumes:
+      - .:/app
+    depends_on:
+      - php-fpm
+    ports:
+      - "8080:80"
+  php-fpm:
+    build:
+      context: ./docker/php
+      dockerfile: php-fpm.docker
+    environment:
+      PHP_IDE_CONFIG: serverName=ls-livewire-snippets
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+  php-cli:
+    build:
+      context: ./docker/php
+      dockerfile: php-cli.docker
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+  db:
+    image: mysql:5.7
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ls_livewire_snippets
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    ports:
+      - "3306:3306"
+  node-watch:
+    build:
+      context: ./docker/node
+    volumes:
+      - .:/app
+    command: sh -c "until [ -f .ready ] ; do sleep 1 ; done && npm run watch"
+  node-cli:
+    build:
+      context: ./docker/node
+    volumes:
+      - .:/app
+volumes:
+  db:
