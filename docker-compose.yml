@@ -14,7 +14,7 @@ services:
       context: ./docker/php
       dockerfile: php-fpm.docker
     environment:
-      PHP_IDE_CONFIG: serverName=ls-livewire-snippets
+      PHP_IDE_CONFIG: serverName=ls-livewire-auth
     volumes:
       - .:/app
     depends_on:

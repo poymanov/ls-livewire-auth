@@ -1,6 +1,7 @@
 <?php
 
 return [
-    'home' => 'Главная',
+    'home'         => 'Главная',
     'registration' => 'Регистрация',
+    'login'        => 'Войти',
 ];

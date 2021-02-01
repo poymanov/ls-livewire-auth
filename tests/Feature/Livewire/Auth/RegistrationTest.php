@@ -26,6 +26,16 @@ class RegistrationTest extends TestCase
     }
 
     /**
+     * Страница доступна только для гостей
+     */
+    function test_guest_only()
+    {
+        $this->actingAs(User::factory()->create());
+        $response = $this->get(self::BASE_URL);
+        $response->assertRedirect('/');
+    }
+
+    /**
      * Отображает форму для ввода регистрационных данных
      */
     public function test_form()

@@ -1,6 +1,7 @@
 <?php
 
 return [
-    'home' => 'Home',
+    'home'         => 'Home',
     'registration' => 'Registration',
+    'login'        => 'Login',
 ];
