@@ -19,4 +19,13 @@ class HomeTest extends TestCase
     {
         $this->get('/')->assertSeeLivewire(Home::getName());
     }
+
+    /**
+     * Для неавторизованного пользователя отображаются ссылки для регистрации/авторизации
+     */
+    public function test_guest_page_contains_auth_links()
+    {
+        $response = $this->get('/');
+        $response->assertSee('Регистрация');
+    }
 }

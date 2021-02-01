@@ -27,7 +27,7 @@
                     </div>
                     <div class="hidden md:block flex">
                         <div class="ml-10 flex items-baseline space-x-4">
-                            <a href="{{ route('home') }}" class="@if (request()->routeIs('home'))bg-gray-900 text-white @else text-gray-300 hover:bg-gray-700 hover:text-white @endif px-3 py-2 rounded-md text-sm font-medium">Главная</a>
+                            <a href="{{ route('home') }}" class="@if (request()->routeIs('home'))bg-gray-900 text-white @else text-gray-300 hover:bg-gray-700 hover:text-white @endif px-3 py-2 rounded-md text-sm font-medium">@lang('other.home')</a>
                         </div>
                     </div>
                 </div>
@@ -35,7 +35,9 @@
                     <div class="ml-4 flex items-center md:ml-6">
                         <div class="hidden md:block flex">
                             <div class="ml-10 flex items-baseline space-x-4">
-
+                                @guest
+                                    <a href="{{ route('registration') }}" class="@if (request()->routeIs('registration'))bg-gray-900 text-white @else text-gray-300 hover:bg-gray-700 hover:text-white @endif px-3 py-2 rounded-md text-sm font-medium">{{ __('other.registration') }}</a>
+                                @endguest
                             </div>
                         </div>
                     </div>
