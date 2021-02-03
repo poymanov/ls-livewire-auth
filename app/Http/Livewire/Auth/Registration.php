@@ -7,6 +7,7 @@ namespace App\Http\Livewire\Auth;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Lang;
 use Livewire\Component;
 
 class Registration extends Component
@@ -39,7 +40,7 @@ class Registration extends Component
 
         event(new Registered($user));
 
-        session()->flash('alert.success', __('auth.registration_successful'));
+        session()->flash('alert.success', Lang::get('auth.registration.successful'));
 
         return redirect(route('home'));
     }

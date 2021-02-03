@@ -148,12 +148,12 @@ class RegistrationTest extends TestCase
      */
     public function test_success()
     {
-        $name = 'test';
+        $name  = 'test';
         $email = 'test@test.ru';
 
         Livewire::test(Registration::class)
             ->set('name', $name)
-            ->set('email',$email)
+            ->set('email', $email)
             ->set('password', 'password')
             ->set('password_confirmation', 'password')
             ->call('submit')
@@ -161,8 +161,9 @@ class RegistrationTest extends TestCase
             ->assertRedirect('/');
 
         $this->assertDatabaseHas('users', [
-            'name' => $name,
-            'email' => $email,
+            'name'              => $name,
+            'email'             => $email,
+            'email_verified_at' => null,
         ]);
     }
 }

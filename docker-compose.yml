@@ -47,5 +47,9 @@ services:
       context: ./docker/node
     volumes:
       - .:/app
+  mailhog:
+    image: 'mailhog/mailhog:latest'
+    ports:
+      - "8025:8025"
 volumes:
   db:

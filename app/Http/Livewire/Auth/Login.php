@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Livewire\Auth;
 
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -43,6 +45,8 @@ class Login extends Component
             ]);
         }
 
+        $this->ensureEmailConfirmed();
+
         RateLimiter::clear($this->throttleKey());
 
         return redirect(route('home'));
@@ -71,6 +75,20 @@ class Login extends Component
                 'minutes' => ceil($seconds / 60),
             ]),
         ]);
+    }
+
+    /**
+     * Проверка, что указанный email подтвержден
+     */
+    private function ensureEmailConfirmed()
+    {
+        $user = User::where('email', $this->email)->firstOrFail();
+
+        if (!$user->hasVerifiedEmail()) {
+            throw ValidationException::withMessages([
+                'email' => Lang::get('auth.login.email.not.confirmed'),
+            ]);
+        }
     }
 
     /**
