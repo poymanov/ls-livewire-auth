@@ -12,4 +12,6 @@ return [
     'verification.hash.not.equal'           => 'Некорректные данные для подтверждения учетной записи.',
     'verification.failed'                   => 'Ошибка подтверждения учетной записи.',
     'verification.successful'               => 'Учетная запись успешно подтверждена.',
+    'verification.resend'                   => 'Отправить письмо для подтверждения адреса',
+    'verification.resend.successful'        => 'Повторное письмо для подтверждения адреса успешно отправлено.',
 ];

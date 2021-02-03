@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\Auth;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Lang;
 use Throwable;
@@ -14,8 +15,10 @@ class VerifyEmailService
     /**
      * Подтверждение email пользователя
      *
-     * @param int    $userId Идентификатор пользователя, адрес которого необходимо подтвердить
+     * @param int    $userId    Идентификатор пользователя, адрес которого необходимо подтвердить
      * @param string $emailHash Хэш адреса почты, который необходимо подтвердить
+     *
+     * @throws Exception
      */
     public function verify(int $userId, string $emailHash): void
     {
@@ -26,6 +29,7 @@ class VerifyEmailService
             throw new \Exception(Lang::get('mail.verification.user.unknown'));
         }
 
+        // Если адрес уже подтвержден
         if ($user->hasVerifiedEmail()) {
             throw new \Exception(Lang::get('mail.verification.already'));
         }
@@ -41,5 +45,29 @@ class VerifyEmailService
         } else {
             throw new \Exception(Lang::get('mail.verification.failed'));
         }
+    }
+
+    /**
+     * Отправка повторого письма для подтверждения учетной записи пользователя
+     *
+     * @param string $email Адрес пользователя, который необходимо подтвердить
+     *
+     * @throws Exception
+     */
+    public function resendVerifyEmail(string $email)
+    {
+        // Если пользователь не найден
+        try {
+            $user = User::where('email', $email)->firstOrFail();
+        } catch (Exception $e) {
+            throw new \Exception(Lang::get('mail.verification.user.unknown'));
+        }
+
+        // Если адрес уже подтвержден
+        if ($user->hasVerifiedEmail()) {
+            throw new \Exception(Lang::get('mail.verification.already'));
+        }
+
+        $user->sendEmailVerificationNotification();
     }
 }

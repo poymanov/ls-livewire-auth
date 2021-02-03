@@ -5,13 +5,16 @@ declare(strict_types=1);
 namespace App\Http\Livewire\Auth;
 
 use App\Models\User;
+use App\Services\Auth\VerifyEmailService;
 use Illuminate\Auth\Events\Lockout;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
+use Throwable;
 
 class Login extends Component
 {
@@ -31,11 +34,19 @@ class Login extends Component
         $this->validateOnly($propertyName);
     }
 
+    /**
+     * Авторизация пользователя
+     *
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws ValidationException
+     */
     public function submit()
     {
         $this->validate();
 
         $this->ensureIsNotRateLimited();
+
+        $this->ensureEmailConfirmed();
 
         if (! Auth::attempt(['email' => $this->email, 'password' => $this->password], filled($this->remember))) {
             RateLimiter::hit($this->throttleKey());
@@ -45,10 +56,27 @@ class Login extends Component
             ]);
         }
 
-        $this->ensureEmailConfirmed();
-
         RateLimiter::clear($this->throttleKey());
 
+        return redirect(route('home'));
+    }
+
+    /**
+     * Повторная отправка письма с подтверждением учетной записи
+     */
+    public function resendVerifyEmail()
+    {
+        /** @var VerifyEmailService $verifyEmailService*/
+        $verifyEmailService = App::make(VerifyEmailService::class);
+
+        try {
+            $verifyEmailService->resendVerifyEmail($this->email);
+        } catch (Throwable $e) {
+            session()->flash('alert.error', $e->getMessage());
+            return redirect(route('login'));
+        }
+
+        session()->flash('alert.success', Lang::get('mail.verification.resend.successful'));
         return redirect(route('home'));
     }
 
@@ -85,6 +113,10 @@ class Login extends Component
         $user = User::where('email', $this->email)->firstOrFail();
 
         if (!$user->hasVerifiedEmail()) {
+            RateLimiter::hit($this->throttleKey());
+
+            session()->flash('login.not.verified.email');
+
             throw ValidationException::withMessages([
                 'email' => Lang::get('auth.login.email.not.confirmed'),
             ]);

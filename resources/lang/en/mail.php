@@ -12,4 +12,5 @@ return [
     'verification.hash.not.equal'           => 'Incorrect data to confirm the account.',
     'verification.failed'                   => 'Account confirmation error.',
     'verification.successful'               => 'Account has been successfully verified.',
+    'verification.resend'                   => 'Send an email to confirm the address.',
 ];
