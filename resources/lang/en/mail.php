@@ -13,4 +13,9 @@ return [
     'verification.failed'                   => 'Account confirmation error.',
     'verification.successful'               => 'Account has been successfully verified.',
     'verification.resend'                   => 'Send an email to confirm the address.',
+    'forgot.password.subject'               => 'Notification of a password reset request',
+    'forgot.password.button.description'    => 'You received this email because you requested to reset your account password.',
+    'forgot.password.button'                => 'Reset Password',
+    'forgot.password.expire'                => 'The link to reset the password is valid :count minutes.',
+    'forgot.password.warning'               => 'If you did not request a password reset, no further action is required.',
 ];

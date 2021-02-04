@@ -19,10 +19,16 @@
                 </div>
             </div>
 
-            <div>
+            <div class="flex items-center justify-between">
                 <div class="flex items-center">
                     <input id="remember" name="remember" type="checkbox" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500" wire:model="remember">
                     <label for="remember" class="ml-2 block text-sm">{{ __('auth.login.remember') }}</label>
+                </div>
+
+                <div class="text-sm">
+                    <a href="{{ route('auth.password.forgot') }}" class="font-medium text-indigo-600 hover:text-indigo-500">
+                        {{ __('other.password.forgot') }}
+                    </a>
                 </div>
             </div>
 

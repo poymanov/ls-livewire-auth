@@ -26,4 +26,9 @@ return [
     'login.throttle'                     => 'Too many login attempts. Please try again in :seconds seconds.',
     'login.remember'                     => 'Remember me',
     'registration.successful'            => 'Registration is completed successfully. An email has been sent to the address you provided to confirm your account.',
+    'forgot.throttle'                    => 'The password reset has been requested previously.',
+    'forgot.success'                     => 'A link to create a new password was sent to the specified email address.',
+    'forgot.failed'                      => 'Error sending a link to create a new password.',
+    'reset.success'                      => 'A new password has been successfully installed.',
+    'reset.failed'                       => 'Error setting a new password.',
 ];

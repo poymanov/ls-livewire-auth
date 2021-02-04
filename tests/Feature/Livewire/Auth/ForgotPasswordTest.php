@@ -4,24 +4,25 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Livewire\Auth;
 
-use App\Http\Livewire\Auth\Login;
+use App\Http\Livewire\Auth\ForgotPassword;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use Tests\TestCase;
 
-class LoginTest extends TestCase
+class ForgotPasswordTest extends TestCase
 {
     use RefreshDatabase;
 
-    private const BASE_URL = '/login';
+    private const BASE_URL = '/forgot-password';
 
     /**
      * Страница отображает правильный компонент
      */
     function test_page_contains_livewire_component()
     {
-        $this->get(self::BASE_URL)->assertSeeLivewire(Login::getName());
+        $this->get(self::BASE_URL)->assertSeeLivewire(ForgotPassword::getName());
     }
 
     /**
@@ -35,46 +36,33 @@ class LoginTest extends TestCase
     }
 
     /**
-     * Отображает форму для ввода регистрационных данных
+     * Отображает форму для даннных
      */
     public function test_form()
     {
         $response = $this->get(self::BASE_URL);
 
         $response->assertSee('Email');
-        $response->assertSee('Пароль');
-        $response->assertSee('Запомнить меня');
     }
 
     /**
-     * Отображает ссылку для сброса пароля
-     */
-    public function test_forgot_password()
-    {
-        $response = $this->get(self::BASE_URL);
-
-        $response->assertSee('Забыли пароль?');
-    }
-
-    /**
-     * Попытка авторизации с пустыми данными
+     * Попытка запроса с пустыми данными
      */
     public function test_validation_empty()
     {
-        Livewire::test(Login::class)
+        Livewire::test(ForgotPassword::class)
             ->call('submit')
             ->assertHasErrors([
                 'email',
-                'password',
             ]);
     }
 
     /**
-     * Попытка авторизации с некорректным email
+     * Попытка запроса с некорректным email
      */
     public function test_validation_not_valid_email()
     {
-        Livewire::test(Login::class)
+        Livewire::test(ForgotPassword::class)
             ->set('email', 'test')
             ->call('submit')
             ->assertHasErrors([
@@ -83,43 +71,50 @@ class LoginTest extends TestCase
     }
 
     /**
-     * Попытка авторизации несуществующим пользователем
+     * Попытка запроса для несуществующего пользователя
      */
     public function test_not_existed_user()
     {
-        Livewire::test(Login::class)
+        Livewire::test(ForgotPassword::class)
             ->set('email', 'test@test.ru')
-            ->set('email', 'password')
             ->call('submit')
             ->assertHasErrors(['email']);
     }
 
     /**
-     * Попытка авторизации несуществующим пользователем
+     * Запрос пароля уже был создан ранее
      */
-    public function test_wrong_password()
+    public function test_already_requested()
     {
         $user = User::factory()->create();
 
-        Livewire::test(Login::class)
+        DB::table('password_resets')->insert([
+            'email'      => $user->email,
+            'token'      => 123,
+            'created_at' => now(),
+        ]);
+
+        Livewire::test(ForgotPassword::class)
             ->set('email', $user->email)
-            ->set('password', 'password123')
             ->call('submit')
             ->assertHasErrors(['email']);
     }
 
     /**
-     * Успешная авторизация
+     * Успешный запрос сброса пароля
      */
     public function test_success()
     {
         $user = User::factory()->create();
 
-        Livewire::test(Login::class)
+        Livewire::test(ForgotPassword::class)
             ->set('email', $user->email)
-            ->set('password', 'password')
             ->call('submit')
-            ->assertHasNoErrors()
+            ->assertHasNoErrors(['email'])
             ->assertRedirect('/');
+
+        $this->assertDatabaseHas('password_resets', [
+            'email' => $user->email,
+        ]);
     }
 }

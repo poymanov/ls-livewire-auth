@@ -14,4 +14,9 @@ return [
     'verification.successful'               => 'Учетная запись успешно подтверждена.',
     'verification.resend'                   => 'Отправить письмо для подтверждения адреса',
     'verification.resend.successful'        => 'Повторное письмо для подтверждения адреса успешно отправлено.',
+    'forgot.password.subject'               => 'Уведомление о запросе на сброс пароля',
+    'forgot.password.button.description'    => 'Вы получили это письмо, потому что запросили сброс пароля вашей учетной записи.',
+    'forgot.password.button'                => 'Сбросить пароль',
+    'forgot.password.expire'                => 'Ссылка на сброс пароля действительна :count минут.',
+    'forgot.password.warning'               => 'Если вы не запрашивали сброс пароля, никаких дальнейших действий не требуется.',
 ];
